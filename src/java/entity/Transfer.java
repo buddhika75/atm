@@ -29,6 +29,8 @@ public class Transfer implements Serializable {
     Institution toInstitution;
     long transferNo;
     String name;
+    String fromUnit;
+    String toUnit;
 
     public Institution getFromInstitution() {
         return fromInstitution;
@@ -60,6 +62,22 @@ public class Transfer implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFromUnit() {
+        return fromUnit;
+    }
+
+    public void setFromUnit(String fromUnit) {
+        this.fromUnit = fromUnit;
+    }
+
+    public String getToUnit() {
+        return toUnit;
+    }
+
+    public void setToUnit(String toUnit) {
+        this.toUnit = toUnit;
     }
     
     
@@ -95,7 +113,7 @@ public class Transfer implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Transfer[ id=" + id + " ]";
+        return transferNo + " " + name + fromInstitution.getName() + " " + fromUnit + " " + toInstitution.getName() + " " + toUnit ;
     }
     
 }
