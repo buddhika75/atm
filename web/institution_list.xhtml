@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="body">
+
+                <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript" ></script>
+
+                <p:growl id="messages" showDetail="true" />
+                <h:form >
+                    <table style="width:100%;">
+                        <tr >
+                            <td style="width: 70%; vertical-align: top;">
+                                <p:gmap id="gmap" center="6.06,80.5" zoom="10" type="HYBRID" 
+                                        style="width:100%;height:400px"
+                                        model="#{gmapController.emptyModel}" 
+                                        widgetVar="map" >
+                                    <p:ajax event="overlaySelect" 
+                                            listener="#{gmapController.onMarkerSelect}" 
+                                            update="panelIns" />
+                                </p:gmap>
+                            </td>
+                            <td style="width: 30%;  vertical-align: top;">
+
+                                <p:panel id="panelIns" >
+                                    <p:panel header="#{gmapController.marker.institution.name}" >
+
+
+
+
+                                        <p:commandButton id="btnDisplay" value="Display"
+                                                         process="btnDisplay tblIn"
+                                                         action="#{gmapController.addLinesForTransfers}" 
+                                                         update="gmap"></p:commandButton>
+
+                                        <p:dataTable 
+                                            id="tblIn"
+                                            value="#{gmapController.marker.institution.transfersIn}" var="intx"
+                                            selection="#{gmapController.selectedInTransfers}" rowKey="#{intx.id}">
+                                            <f:facet name="header">
+                                                <h:outputText value="In Transfers" ></h:outputText>
+                                            </f:facet>
+                                            <p:column selectionMode="multiple" style="size: 20px;"></p:column>
+                                            <p:column headerText="No" >
+                                                <h:outputText value="#{intx.transferNo}" ></h:outputText>
+                                            </p:column>
+                                            <p:column headerText="From" >
+                                                <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                        <p:dataTable value="#{gmapController.marker.institution.transfersOut}" 
+                                                     id="tblOut"
+                                                     var="outtx"
+                                                     selection="#{gmapController.selectedInTransfers}" rowKey="#{outtx.id}">
+                                            <f:facet name="header">
+                                                <h:outputText value="Out Transfers" ></h:outputText>
+                                            </f:facet>
+                                            <p:column selectionMode="multiple" style="size: 20px;"></p:column>
+                                            <p:column headerText="No" >
+                                                <h:outputText value="#{outtx.transferNo}" ></h:outputText>
+                                            </p:column>
+                                            <p:column headerText="To" >
+                                                <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </p:panel>
+                                </p:panel>
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+
+
+
+
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

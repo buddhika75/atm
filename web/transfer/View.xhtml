@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="TransferViewDlg" widgetVar="TransferViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTransferTitle}">
+            <h:form id="TransferViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{transferController.selected != null}">
+                        <h:outputText value="#{bundle.ViewTransferLabel_fromInstitution}"/>
+                        <h:outputText value="#{transferController.selected.fromInstitution}" title="#{bundle.ViewTransferTitle_fromInstitution}"/>
+                        <h:outputText value="#{bundle.ViewTransferLabel_toInstitution}"/>
+                        <h:outputText value="#{transferController.selected.toInstitution}" title="#{bundle.ViewTransferTitle_toInstitution}"/>
+                        <h:outputText value="#{bundle.ViewTransferLabel_transferNo}"/>
+                        <h:outputText value="#{transferController.selected.transferNo}" title="#{bundle.ViewTransferTitle_transferNo}"/>
+                        <h:outputText value="#{bundle.ViewTransferLabel_name}"/>
+                        <h:outputText value="#{transferController.selected.name}" title="#{bundle.ViewTransferTitle_name}"/>
+                        <h:outputText value="#{bundle.ViewTransferLabel_id}"/>
+                        <h:outputText value="#{transferController.selected.id}" title="#{bundle.ViewTransferTitle_id}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="TransferViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>
