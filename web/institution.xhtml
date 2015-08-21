@@ -16,7 +16,10 @@
 
                 <p:growl id="messages" showDetail="true" />
 
-                <p:gmap id="gmap" center="6.06,80.5" zoom="10" type="HYBRID" style="width:100%;height:400px"
+                <p:gmap id="gmap" 
+                        center="#{gmapController.preference.lat},#{gmapController.preference.lng}" 
+                        zoom="#{gmapController.preference.zoom}"  
+                        type="HYBRID" style="width:100%;height:400px"
                         model="#{gmapController.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map" />
 
                 <p:dialog widgetVar="dlg" showEffect="fade">

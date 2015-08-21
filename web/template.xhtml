@@ -32,7 +32,13 @@
             </p:layoutUnit>
 
             <p:layoutUnit position="south" size="60">
-                <ui:insert name="footer"/>
+                <ui:insert name="footer">
+                    <h:form>
+                        Current coordinates : #{gmapController.preference.lat},#{gmapController.preference.lng} : Current Zoom: #{gmapController.preference.zoom}
+                        <p:commandLink value="fix" action="#{gmapController}" ></p:commandLink>
+                        
+                    </h:form>
+                </ui:insert>
             </p:layoutUnit>
 
             <p:layoutUnit position="center">

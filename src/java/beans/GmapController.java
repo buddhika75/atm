@@ -8,7 +8,9 @@ package beans;
 import bean.InsMarker;
 import faces.InstitutionFacade;
 import entity.Institution;
+import entity.Preference;
 import entity.Transfer;
+import faces.PreferenceFacade;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -33,9 +35,12 @@ import org.primefaces.model.map.Polyline;
 @ManagedBean
 @SessionScoped
 public class GmapController implements Serializable {
+    @EJB
+    PreferenceFacade preferenceFacade;
 
     private MapModel emptyModel;
     private InsMarker marker;
+    Preference preference;
 
     private String title;
 
@@ -54,14 +59,14 @@ public class GmapController implements Serializable {
         removeLines();
         if (selectedInTransfers != null) {
             for (Transfer txin : selectedInTransfers) {
-                addLineForTransfer(txin.getFromInstitution(), txin.getToInstitution());
+                addLineForTransfer(txin.getFromInstitution(), txin.getToInstitution(), "#0d7a25");
                 System.out.println("txin = " + txin);
             }
         }
         if (selectedOutTransfers != null) {
             for (Transfer txOut : selectedOutTransfers) {
                 System.out.println("txOut = " + txOut);
-                addLineForTransfer(txOut.getFromInstitution(), txOut.getToInstitution());
+                addLineForTransfer(txOut.getFromInstitution(), txOut.getToInstitution(),"#FF0000");
             }
         }
     }
@@ -69,33 +74,36 @@ public class GmapController implements Serializable {
     public void onStateChange(StateChangeEvent event) {
         LatLngBounds bounds = event.getBounds();
         int zoomLevel = event.getZoomLevel();
+        getPreference();
+        preference.setZoom(zoomLevel);
+        preference.setLat(event.getCenter().getLat());
+        preference.setLng(event.getCenter().getLng());
+        preferenceFacade.edit(preference);
 
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Zoom Level", String.valueOf(zoomLevel)));
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Center", event.getCenter().toString()));
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "NorthEast", bounds.getNorthEast().toString()));
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "SouthWest", bounds.getSouthWest().toString()));
+    }
+    
+    public void savePreferences(){
+        preferenceFacade.edit(getPreference());
     }
 
-    public void addLineForTransfer(Institution fromInstitution, Institution toInstitution) {
+    public void addLineForTransfer(Institution fromInstitution, Institution toInstitution, String colourHex) {
         System.out.println("add line for transfer");
         LatLng coord1 = new LatLng(fromInstitution.getLat(), fromInstitution.getLng());
         LatLng coord2 = new LatLng(toInstitution.getLat(), toInstitution.getLng());
         Polyline pl = new Polyline();
         pl.getPaths().add(coord1);
         pl.getPaths().add(coord2);
-        pl.setStrokeWeight(10);
-        pl.setStrokeColor("#FF9900");
-        pl.setStrokeOpacity(0.7);
+        pl.setStrokeWeight(4);
+        pl.setStrokeColor(colourHex);
+        pl.setStrokeOpacity(1);
         System.out.println("pl = " + pl);
         emptyModel.addOverlay(pl);
     }
 
     public void removeLines() {
         System.out.println("removing lines");
-        for (Polyline pl : getEmptyModel().getPolylines()) {
-            System.out.println("pl = " + pl);
-            getEmptyModel().getPolylines().remove(pl);
-        }
+        emptyModel = new DefaultMapModel();
+        listInstitutions();
     }
 
     public String listInstitutions() {
@@ -215,4 +223,28 @@ public class GmapController implements Serializable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public Preference getPreference() {
+        System.out.println("preference = " + preference);
+        if(preference==null){
+          List<Preference> ps =  preferenceFacade.findAll();
+            System.out.println("ps = " + ps);
+          if(ps==null || ps.isEmpty()){
+              Preference p=new Preference();
+              p.setZoom(10);
+              p.setLat(6.06);
+              p.setLng(80.5);
+              preferenceFacade.create(p);
+              preference=p;
+          }else{
+              preference = ps.get(0);
+          }
+        }
+        return preference;
+    }
+
+    public void setPreference(Preference preference) {
+        this.preference = preference;
+    }
+
+    
 }
