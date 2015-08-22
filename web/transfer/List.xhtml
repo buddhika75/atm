@@ -26,19 +26,6 @@
 
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
-
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListTransferTitle_fromInstitution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.fromInstitution}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListTransferTitle_toInstitution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.toInstitution}"/>
-                        </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListTransferTitle_transferNo}"/>
@@ -53,10 +40,31 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListTransferTitle_id}"/>
+                                <h:outputText value="#{bundle.ListTransferTitle_fromInstitution}"/>
                             </f:facet>
-                            <h:outputText value="#{item.id}"/>
+                            <h:outputText value="#{item.fromInstitution.name}"/>
                         </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="From Unit"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fromUnit}"/>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListTransferTitle_toInstitution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.toInstitution.name}"/>
+                        </p:column>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="To Unit"/>
+                            </f:facet>
+                            <h:outputText value="#{item.toUnit}"/>
+                        </p:column>
+
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundle.Create}" actionListener="#{transferController.prepareCreate}" update=":TransferCreateForm" oncomplete="PF('TransferCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundle.View}" update=":TransferViewForm" oncomplete="PF('TransferViewDialog').show()" disabled="#{empty transferController.selected}"/>

@@ -12,24 +12,33 @@
             <h:form id="TransferCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{transferController.selected != null}">
+                       
+                        <p:outputLabel value="#{bundle.CreateTransferLabel_transferNo}" for="transferNo" />
+                        <p:inputText id="transferNo" value="#{transferController.selected.transferNo}" title="#{bundle.CreateTransferTitle_transferNo}" />
+                       
+                        <p:outputLabel value="#{bundle.CreateTransferLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{transferController.selected.name}" title="#{bundle.CreateTransferTitle_name}" />
+
                         <p:outputLabel value="#{bundle.CreateTransferLabel_fromInstitution}" for="fromInstitution" />
                         <p:selectOneMenu id="fromInstitution" value="#{transferController.selected.fromInstitution}" >
                             <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
                                            var="fromInstitutionItem"
                                            itemValue="#{fromInstitutionItem}"/>
                         </p:selectOneMenu>
+                        
+                        <p:outputLabel value="From Unit" for="fromUnit" />
+                        <p:inputText id="fromUnit" value="#{transferController.selected.fromUnit}" title="From Unit" />
+
                         <p:outputLabel value="#{bundle.CreateTransferLabel_toInstitution}" for="toInstitution" />
                         <p:selectOneMenu id="toInstitution" value="#{transferController.selected.toInstitution}" >
                             <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
                                            var="toInstitutionItem"
                                            itemValue="#{toInstitutionItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.CreateTransferLabel_transferNo}" for="transferNo" />
-                        <p:inputText id="transferNo" value="#{transferController.selected.transferNo}" title="#{bundle.CreateTransferTitle_transferNo}" />
-                        <p:outputLabel value="#{bundle.CreateTransferLabel_name}" for="name" />
-                        <p:inputText id="name" value="#{transferController.selected.name}" title="#{bundle.CreateTransferTitle_name}" />
-                        <p:outputLabel value="#{bundle.CreateTransferLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{transferController.selected.id}" title="#{bundle.CreateTransferTitle_id}" />
+                        
+                        <p:outputLabel value="To Unit" for="toUnit" />
+                        <p:inputText id="toUnit" value="#{transferController.selected.toUnit}" title="To Unit" />
+
                     </p:panelGrid>
                     <p:commandButton actionListener="#{transferController.create}" value="#{bundle.Save}" update="display,:TransferListForm:datalist,:growl" oncomplete="handleSubmit(args,'TransferCreateDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="TransferCreateDialog.hide()"/>

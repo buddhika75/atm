@@ -1,6 +1,7 @@
 package beans;
 
 import entity.Institution;
+import enums.InstitutionType;
 import faces.JsfUtil;
 import faces.JsfUtil.PersistAction;
 import faces.InstitutionFacade;
@@ -28,6 +29,10 @@ public class InstitutionController implements Serializable {
     private List<Institution> items = null;
     private Institution selected;
 
+    public InstitutionType[] getInstitutionTypes(){
+        return InstitutionType.values();
+    }
+    
     public InstitutionController() {
     }
 
