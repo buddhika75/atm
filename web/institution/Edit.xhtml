@@ -13,7 +13,10 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
                         <p:outputLabel value="#{bundle.EditInstitutionLabel_type}" for="type" />
-                        <p:inputText id="type" value="#{institutionController.selected.type}" title="#{bundle.EditInstitutionTitle_type}" />
+                        <p:selectOneMenu id="type" value="#{institutionController.selected.type}" >
+                            <f:selectItem itemLabel="Select Type" ></f:selectItem>
+                            <f:selectItems value="#{institutionController.institutionTypes}" ></f:selectItems>
+                        </p:selectOneMenu>
                         <p:outputLabel value="#{bundle.EditInstitutionLabel_name}" for="name" />
                         <p:inputText id="name" value="#{institutionController.selected.name}" title="#{bundle.EditInstitutionTitle_name}" />
                         <p:outputLabel value="#{bundle.EditInstitutionLabel_lat}" for="lat" />
@@ -29,8 +32,6 @@
                                            var="parentInstitutionItem"
                                            itemValue="#{parentInstitutionItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundle.EditInstitutionLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{institutionController.selected.id}" title="#{bundle.EditInstitutionTitle_id}" />
                     </p:panelGrid>
                     <p:commandButton actionListener="#{institutionController.update}" value="#{bundle.Save}" update="display,:InstitutionListForm:datalist,:growl" oncomplete="handleSubmit(args, 'InstitutionEditDialog');"/>
                     <p:commandButton value="#{bundle.Cancel}" onclick="InstitutionEditDialog.hide()"/>
