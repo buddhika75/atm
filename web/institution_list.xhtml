@@ -41,67 +41,70 @@
                             <td style="width: 30%;  vertical-align: top;">
 
                                 <p:panel id="panelIns" >
-                                    <p:panel header="#{gmapController.marker.institution.name}" >
-
-                                        <p:panelGrid columns="1" >
-
-
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="#{gmapController.marker.institution.name}" ></p:outputLabel>
+                                            
                                             <p:commandButton id="btnDisplay" value="Display"
-                                                             process="btnDisplay tblIn tblOut"
+                                                             process=":#{p:component('tblIn')} :#{p:component('tblOut')} btnDisplay"
                                                              action="#{gmapController.addLinesForTransfers}" 
                                                              update="gmap"></p:commandButton>
+                                        </f:facet>
 
-                                            <p:dataTable 
-                                                id="tblIn"
-                                                value="#{gmapController.marker.institution.transfersIn}" var="intx"
-                                                selection="#{gmapController.selectedInTransfers}" rowKey="#{intx.id}">
-                                                <f:facet name="header">
-                                                    <h:outputText value="In Transfers" ></h:outputText>
-                                                </f:facet>
-                                                <p:column selectionMode="multiple" style="width: 20px;"></p:column>
-                                                <p:column headerText="No" style="width: 50px;" >
-                                                    <h:outputText value="#{intx.transferNo}" ></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="From" style="width: 100px;">
-                                                    <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
-                                                    <h:outputText value=" - " ></h:outputText>
-                                                    <h:outputText value="#{intx.fromUnit}" ></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="Name" style="width: 100px;" >
-                                                    <h:outputText value="#{intx.name}" ></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="To Unit" style="width: 100px;" >
-                                                    <h:outputText value="#{intx.toUnit}" ></h:outputText>
-                                                </p:column>
-                                            </p:dataTable>
+                                        <p:tabView >
+                                            <p:tab title="Transfer Ins" >
+                                                <p:dataTable 
+                                                    id="tblIn"
+                                                    value="#{gmapController.marker.institution.transfersIn}" var="intx"
+                                                    selection="#{gmapController.selectedInTransfers}" rowKey="#{intx.id}">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="In Transfers" ></h:outputText>
+                                                    </f:facet>
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" style="width: 50px;" >
+                                                        <h:outputText value="#{intx.transferNo}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From" style="width: 100px;">
+                                                        <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{intx.fromUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" style="width: 100px;" >
+                                                        <h:outputText value="#{intx.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To Unit" style="width: 100px;" >
+                                                        <h:outputText value="#{intx.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:tab>
+                                            <p:tab title="Transfer outs" >
+                                                <p:dataTable value="#{gmapController.marker.institution.transfersOut}" 
+                                                             id="tblOut"
+                                                             var="outtx"
+                                                             selection="#{gmapController.selectedOutTransfers}" rowKey="#{outtx.id}">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Out Transfers" ></h:outputText>
+                                                    </f:facet>
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" >
+                                                        <h:outputText value="#{outtx.transferNo}" style="width: 100px;"></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To" >
+                                                        <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{outtx.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" >
+                                                        <h:outputText value="#{outtx.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From Unit" >
+                                                        <h:outputText value="#{outtx.fromUnit}" ></h:outputText>
+                                                    </p:column>
 
-                                            <p:dataTable value="#{gmapController.marker.institution.transfersOut}" 
-                                                         id="tblOut"
-                                                         var="outtx"
-                                                         selection="#{gmapController.selectedOutTransfers}" rowKey="#{outtx.id}">
-                                                <f:facet name="header">
-                                                    <h:outputText value="Out Transfers" ></h:outputText>
-                                                </f:facet>
-                                                <p:column selectionMode="multiple" style="width: 20px;"></p:column>
-                                                <p:column headerText="No" >
-                                                    <h:outputText value="#{outtx.transferNo}" style="width: 100px;"></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="To" >
-                                                    <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
-                                                    <h:outputText value=" - " ></h:outputText>
-                                                    <h:outputText value="#{outtx.toUnit}" ></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="Name" >
-                                                    <h:outputText value="#{outtx.name}" ></h:outputText>
-                                                </p:column>
-                                                <p:column headerText="From Unit" >
-                                                    <h:outputText value="#{outtx.fromUnit}" ></h:outputText>
-                                                </p:column>
+                                                </p:dataTable>
+                                            </p:tab>
+                                        </p:tabView>
 
-                                            </p:dataTable>
-
-                                        </p:panelGrid>
-                                    </p:panel>
+                                    
                                 </p:panel>
                             </td>
                         </tr>
