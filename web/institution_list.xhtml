@@ -23,7 +23,7 @@
                     <table style="width:100%;">
                         <tr >
                             <td style="width: 70%; vertical-align: top;">
-                                
+
 
                                 <p:gmap id="gmap" 
                                         center="#{gmapController.preference.lat},#{gmapController.preference.lng}" 
@@ -59,11 +59,19 @@
                                                     <h:outputText value="In Transfers" ></h:outputText>
                                                 </f:facet>
                                                 <p:column selectionMode="multiple" style="width: 20px;"></p:column>
-                                                <p:column headerText="No" style="width: 100px;" >
+                                                <p:column headerText="No" style="width: 50px;" >
                                                     <h:outputText value="#{intx.transferNo}" ></h:outputText>
                                                 </p:column>
-                                                <p:column headerText="From" >
+                                                <p:column headerText="From" style="width: 100px;">
                                                     <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
+                                                    <h:outputText value=" - " ></h:outputText>
+                                                    <h:outputText value="#{intx.fromUnit}" ></h:outputText>
+                                                </p:column>
+                                                <p:column headerText="Name" style="width: 100px;" >
+                                                    <h:outputText value="#{intx.name}" ></h:outputText>
+                                                </p:column>
+                                                <p:column headerText="To Unit" style="width: 100px;" >
+                                                    <h:outputText value="#{intx.toUnit}" ></h:outputText>
                                                 </p:column>
                                             </p:dataTable>
 
@@ -80,7 +88,16 @@
                                                 </p:column>
                                                 <p:column headerText="To" >
                                                     <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
+                                                    <h:outputText value=" - " ></h:outputText>
+                                                    <h:outputText value="#{outtx.toUnit}" ></h:outputText>
                                                 </p:column>
+                                                <p:column headerText="Name" >
+                                                    <h:outputText value="#{outtx.name}" ></h:outputText>
+                                                </p:column>
+                                                <p:column headerText="From Unit" >
+                                                    <h:outputText value="#{outtx.fromUnit}" ></h:outputText>
+                                                </p:column>
+
                                             </p:dataTable>
 
                                         </p:panelGrid>
