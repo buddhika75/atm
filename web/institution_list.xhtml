@@ -41,17 +41,21 @@
                             <td style="width: 30%;  vertical-align: top;">
 
                                 <p:panel id="panelIns" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="#{gmapController.marker.institution.name}" ></p:outputLabel>
-                                            
-                                            <p:commandButton id="btnDisplay" value="Display"
-                                                             process=":#{p:component('tblIn')} :#{p:component('tblOut')} :#{p:component('tblInCom')} :#{p:component('tblOutCom')} btnDisplay"
-                                                             action="#{gmapController.addLinesForTransfers}" 
-                                                             update="gmap"></p:commandButton>
-                                        </f:facet>
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="#{gmapController.marker.institution.name}" ></p:outputLabel>
 
-                                        <p:tabView >
-                                            
+                                        <p:commandButton id="btnDisplay" value="Display"
+                                                         process=":#{p:component('gpLists')} btnDisplay"
+                                                         action="#{gmapController.addLinesForTransfers}" 
+                                                         update="gmap"></p:commandButton>
+                                    </f:facet>
+
+
+                                    <h:panelGroup id="gpLists" >
+
+
+                                        <p:tabView rendered="#{gmapController.marker ne null}" >
+
                                             <p:tab title="Ins" >
                                                 <p:dataTable 
                                                     id="tblIn"
@@ -105,9 +109,9 @@
 
                                                 </p:dataTable>
                                             </p:tab>
-                                            
-                                            
-                                             <p:tab title="Ins(Completed)" >
+
+
+                                            <p:tab title="Ins(Completed)" >
                                                 <p:dataTable 
                                                     id="tblInCom"
                                                     value="#{gmapController.marker.institution.transfersInCompleted}" 
@@ -157,7 +161,110 @@
                                             </p:tab>
                                         </p:tabView>
 
-                                    
+
+                                        <p:tabView rendered="#{gmapController.polyline ne null}" >
+
+                                            <p:tab title="Ups" >
+                                                <p:dataTable 
+                                                    id="tblUps"
+                                                    value="#{gmapController.upsPending}" var="intx"
+                                                    selection="#{gmapController.selectedInTransfers}" 
+                                                    rowKey="#{intx.id}">
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" style="width: 20px;" >
+                                                        <h:outputText value="#{intx.transferNo}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From" style="width: 100px;">
+                                                        <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{intx.fromUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" style="width: 100px;" >
+                                                        <h:outputText value="#{intx.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To Unit" style="width: 100px;" >
+                                                        <h:outputText value="#{intx.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:tab>
+                                            <p:tab title="Downs" >
+                                                <p:dataTable value="#{gmapController.downsPending}" 
+                                                             id="tblDowns"
+                                                             var="outtx"
+                                                             selection="#{gmapController.selectedOutTransfers}" 
+                                                             rowKey="#{outtx.id}">
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" style="width: 20px;">
+                                                        <h:outputText value="#{outtx.transferNo}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To" style="width: 100px;">
+                                                        <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{outtx.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" style="width: 100px;">
+                                                        <h:outputText value="#{outtx.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From Unit" style="width: 100px;">
+                                                        <h:outputText value="#{outtx.fromUnit}" ></h:outputText>
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </p:tab>
+
+
+                                            <p:tab title="Ups(Completed)" >
+                                                <p:dataTable 
+                                                    id="tblUpsCom"
+                                                    value="#{gmapController.upsCompleted}" 
+                                                    var="intxc"
+                                                    selection="#{gmapController.selectedInCompletedTransfers}" 
+                                                    rowKey="#{intxc.id}">
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" style="width: 20px;" >
+                                                        <h:outputText value="#{intxc.transferNo}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From" style="width: 100px;">
+                                                        <h:outputText value="#{intxc.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{intxc.fromUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" style="width: 100px;" >
+                                                        <h:outputText value="#{intxc.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To Unit" style="width: 100px;" >
+                                                        <h:outputText value="#{intxc.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:tab>
+                                            <p:tab title="Downs (Comp)" >
+                                                <p:dataTable value="#{gmapController.downsCompleted}" 
+                                                             id="tblDownsCom"
+                                                             var="outtxc"
+                                                             selection="#{gmapController.selectedOutCompletedTransfers}" 
+                                                             rowKey="#{outtxc.id}">
+                                                    <p:column selectionMode="multiple" style="width: 20px;"></p:column>
+                                                    <p:column headerText="No" style="width: 20px;">
+                                                        <h:outputText value="#{outtxc.transferNo}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="To" style="width: 100px;">
+                                                        <h:outputText value="#{outtxc.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{outtxc.toUnit}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="Name" style="width: 100px;">
+                                                        <h:outputText value="#{outtxc.name}" ></h:outputText>
+                                                    </p:column>
+                                                    <p:column headerText="From Unit" style="width: 100px;">
+                                                        <h:outputText value="#{outtxc.fromUnit}" ></h:outputText>
+                                                    </p:column>
+
+                                                </p:dataTable>
+                                            </p:tab>
+                                        </p:tabView>
+
+                                    </h:panelGroup>
+
                                 </p:panel>
                             </td>
                         </tr>

@@ -6,13 +6,17 @@
 package beans;
 
 import bean.InsMarker;
+import bean.TxPolyline;
 import faces.InstitutionFacade;
 import entity.Institution;
 import entity.Preference;
 import entity.Transfer;
 import faces.PreferenceFacade;
+import faces.TransferFacade;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -26,6 +30,7 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.LatLngBounds;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.map.Overlay;
 import org.primefaces.model.map.Polyline;
 
 /**
@@ -35,11 +40,15 @@ import org.primefaces.model.map.Polyline;
 @ManagedBean
 @SessionScoped
 public class GmapController implements Serializable {
+
     @EJB
     PreferenceFacade preferenceFacade;
+    @EJB
+    TransferFacade transferFacade;
 
     private MapModel emptyModel;
     private InsMarker marker;
+    private TxPolyline polyline;
     Preference preference;
 
     private String title;
@@ -47,6 +56,11 @@ public class GmapController implements Serializable {
     private double lat;
 
     private double lng;
+
+    List<Transfer> upsPending;
+    List<Transfer> downsPending;
+    List<Transfer> upsCompleted;
+    List<Transfer> downsCompleted;
 
     List<Transfer> selectedInTransfers;
     List<Transfer> selectedOutTransfers;
@@ -59,14 +73,11 @@ public class GmapController implements Serializable {
     public void addLinesForTransfers() {
         System.out.println("addLinesForTransfers");
         removeLines();
-        
-        
-        
-        
+
         if (selectedInTransfers != null) {
             System.out.println("selectedInTransfers.size() = " + selectedInTransfers.size());
             for (Transfer txin : selectedInTransfers) {
-                addLineForTransfer(txin.getFromInstitution(), txin.getToInstitution(), "#0d7a25");
+                addLineForTransfer(txin, "#0d7a25");
                 System.out.println("txin = " + txin);
             }
         }
@@ -74,21 +85,21 @@ public class GmapController implements Serializable {
             System.out.println("selectedOutTransfers.size() = " + selectedOutTransfers.size());
             for (Transfer txOut : selectedOutTransfers) {
                 System.out.println("txOut = " + txOut);
-                addLineForTransfer(txOut.getFromInstitution(), txOut.getToInstitution(),"#FF0000");
+                addLineForTransfer(txOut, "#FF0000");
             }
         }
         if (selectedInCompletedTransfers != null) {
             System.out.println("selectedInCompletedTransfers.size() = " + selectedInCompletedTransfers.size());
             for (Transfer txInCom : selectedInCompletedTransfers) {
                 System.out.println("txInCom = " + txInCom);
-                addLineForTransfer(txInCom.getFromInstitution(), txInCom.getToInstitution(),"#99FF66");
+                addLineForTransfer(txInCom, "#99FF66");
             }
         }
         if (selectedOutCompletedTransfers != null) {
             System.out.println("selectedOutCompletedTransfers.size() = " + selectedOutCompletedTransfers.size());
             for (Transfer txOutCom : selectedOutCompletedTransfers) {
                 System.out.println("txOutCom = " + txOutCom);
-                addLineForTransfer(txOutCom.getFromInstitution(), txOutCom.getToInstitution(),"#FFCCFF");
+                addLineForTransfer(txOutCom, "#FFCCFF");
             }
         }
     }
@@ -103,21 +114,22 @@ public class GmapController implements Serializable {
         preferenceFacade.edit(preference);
 
     }
-    
-    public void savePreferences(){
+
+    public void savePreferences() {
         preferenceFacade.edit(getPreference());
     }
 
-    public void addLineForTransfer(Institution fromInstitution, Institution toInstitution, String colourHex) {
+    public void addLineForTransfer(Transfer tx, String colourHex) {
         System.out.println("add line for transfer");
-        LatLng coord1 = new LatLng(fromInstitution.getLat(), fromInstitution.getLng());
-        LatLng coord2 = new LatLng(toInstitution.getLat(), toInstitution.getLng());
-        Polyline pl = new Polyline();
+        LatLng coord1 = new LatLng(tx.getFromInstitution().getLat(), tx.getFromInstitution().getLng());
+        LatLng coord2 = new LatLng(tx.getToInstitution().getLat(), tx.getToInstitution().getLng());
+        TxPolyline pl = new TxPolyline();
         pl.getPaths().add(coord1);
         pl.getPaths().add(coord2);
         pl.setStrokeWeight(4);
         pl.setStrokeColor(colourHex);
         pl.setStrokeOpacity(1);
+        pl.setTransfer(tx);
         System.out.println("pl = " + pl);
         emptyModel.addOverlay(pl);
     }
@@ -183,18 +195,75 @@ public class GmapController implements Serializable {
 
     public void onMarkerSelect(OverlaySelectEvent event) {
         System.out.println("event = " + event);
-        Marker m1 = (Marker) event.getOverlay();
-        System.out.println("m1 = " + m1);
-        if (m1 instanceof InsMarker) {
-            marker = (InsMarker) m1;
-            System.out.println("marker = " + marker);
-            System.out.println("marker.getInstitution().getTransfersIn().size() = " + marker.getInstitution().getTransfersIn().size());
-            System.out.println("marker.getInstitution().getTransfersOut().size() = " + marker.getInstitution().getTransfersOut().size());
+        Overlay ol = event.getOverlay();
+        Marker m;
+        Polyline p;
 
+        marker = null;
+        polyline = null;
+        selectedInTransfers = null;
+        selectedOutTransfers = null;
+        selectedInCompletedTransfers = null;
+        selectedOutCompletedTransfers = null;
+        upsCompleted=null;
+        upsPending=null;
+        downsCompleted=null;
+        downsPending=null;
+
+        if (ol instanceof Marker) {
+            m = (Marker) event.getOverlay();
+            System.out.println("m1 = " + m);
+            if (m instanceof InsMarker) {
+                marker = (InsMarker) m;
+            } else {
+                System.out.println("not insMarker");
+            }
+            System.out.println("m1 = " + m);
+        } else if (ol instanceof Polyline) {
+            p = (Polyline) event.getOverlay();
+            System.out.println("p = " + p);
+            if (p instanceof TxPolyline) {
+                polyline = (TxPolyline) p;
+                String j;
+                Map mp = new HashMap();
+                mp.put("fi", polyline.getTransfer().getFromInstitution());
+                mp.put("ti", polyline.getTransfer().getToInstitution());
+                j = "select t "
+                        + " from Transfer t "
+                        + " where t.fromInstitution=:fi and t.toInstitution=:ti "
+                        + " and t.completed=true "
+                        + " order by t.transferNo";
+                upsCompleted = transferFacade.findBySQL(j, mp);
+                
+                j = "select t "
+                        + " from Transfer t "
+                        + " where t.fromInstitution=:fi and t.toInstitution=:ti "
+                        + " and t.completed=false "
+                        + " order by t.transferNo";
+                upsPending = transferFacade.findBySQL(j, mp);
+                
+                j = "select t "
+                        + " from Transfer t "
+                        + " where t.fromInstitution=:ti and t.toInstitution=:fi"
+                        + " and t.completed=true  "
+                        + " order by t.transferNo";
+                downsCompleted = transferFacade.findBySQL(j, mp);
+                
+                j = "select t "
+                        + " from Transfer t "
+                        + " where t.fromInstitution=:ti and t.toInstitution=:fi"
+                        + " and t.completed=false  "
+                        + " order by t.transferNo";
+                downsPending = transferFacade.findBySQL(j, mp);
+                
+                
+            } else {
+
+                System.out.println("not TxPolyline");
+            }
         } else {
-            System.out.println("not insMarker");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Nothing Selected", null));
         }
-        System.out.println("m1 = " + m1);
     }
 
     public void addMarker() {
@@ -247,19 +316,19 @@ public class GmapController implements Serializable {
 
     public Preference getPreference() {
         System.out.println("preference = " + preference);
-        if(preference==null){
-          List<Preference> ps =  preferenceFacade.findAll();
+        if (preference == null) {
+            List<Preference> ps = preferenceFacade.findAll();
             System.out.println("ps = " + ps);
-          if(ps==null || ps.isEmpty()){
-              Preference p=new Preference();
-              p.setZoom(10);
-              p.setLat(6.06);
-              p.setLng(80.5);
-              preferenceFacade.create(p);
-              preference=p;
-          }else{
-              preference = ps.get(0);
-          }
+            if (ps == null || ps.isEmpty()) {
+                Preference p = new Preference();
+                p.setZoom(10);
+                p.setLat(6.06);
+                p.setLng(80.5);
+                preferenceFacade.create(p);
+                preference = p;
+            } else {
+                preference = ps.get(0);
+            }
         }
         return preference;
     }
@@ -284,6 +353,52 @@ public class GmapController implements Serializable {
         this.selectedOutCompletedTransfers = selectedOutCompletedTransfers;
     }
 
-    
-    
+    public TxPolyline getPolyline() {
+        return polyline;
+    }
+
+    public void setPolyline(TxPolyline polyline) {
+        this.polyline = polyline;
+    }
+
+    public PreferenceFacade getPreferenceFacade() {
+        return preferenceFacade;
+    }
+
+    public void setPreferenceFacade(PreferenceFacade preferenceFacade) {
+        this.preferenceFacade = preferenceFacade;
+    }
+
+    public List<Transfer> getUpsPending() {
+        return upsPending;
+    }
+
+    public void setUpsPending(List<Transfer> upsPending) {
+        this.upsPending = upsPending;
+    }
+
+    public List<Transfer> getDownsPending() {
+        return downsPending;
+    }
+
+    public void setDownsPending(List<Transfer> downsPending) {
+        this.downsPending = downsPending;
+    }
+
+    public List<Transfer> getUpsCompleted() {
+        return upsCompleted;
+    }
+
+    public void setUpsCompleted(List<Transfer> upsCompleted) {
+        this.upsCompleted = upsCompleted;
+    }
+
+    public List<Transfer> getDownsCompleted() {
+        return downsCompleted;
+    }
+
+    public void setDownsCompleted(List<Transfer> downsCompleted) {
+        this.downsCompleted = downsCompleted;
+    }
+
 }
