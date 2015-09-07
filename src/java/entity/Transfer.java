@@ -31,7 +31,18 @@ public class Transfer implements Serializable {
     String name;
     String fromUnit;
     String toUnit;
+    boolean completed;
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    
+    
+    
     public Institution getFromInstitution() {
         return fromInstitution;
     }

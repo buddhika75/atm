@@ -50,6 +50,8 @@ public class GmapController implements Serializable {
 
     List<Transfer> selectedInTransfers;
     List<Transfer> selectedOutTransfers;
+    List<Transfer> selectedInCompletedTransfers;
+    List<Transfer> selectedOutCompletedTransfers;
 
     @EJB
     InstitutionFacade institutionFacade;
@@ -57,16 +59,36 @@ public class GmapController implements Serializable {
     public void addLinesForTransfers() {
         System.out.println("addLinesForTransfers");
         removeLines();
+        
+        
+        
+        
         if (selectedInTransfers != null) {
+            System.out.println("selectedInTransfers.size() = " + selectedInTransfers.size());
             for (Transfer txin : selectedInTransfers) {
                 addLineForTransfer(txin.getFromInstitution(), txin.getToInstitution(), "#0d7a25");
                 System.out.println("txin = " + txin);
             }
         }
         if (selectedOutTransfers != null) {
+            System.out.println("selectedOutTransfers.size() = " + selectedOutTransfers.size());
             for (Transfer txOut : selectedOutTransfers) {
                 System.out.println("txOut = " + txOut);
                 addLineForTransfer(txOut.getFromInstitution(), txOut.getToInstitution(),"#FF0000");
+            }
+        }
+        if (selectedInCompletedTransfers != null) {
+            System.out.println("selectedInCompletedTransfers.size() = " + selectedInCompletedTransfers.size());
+            for (Transfer txInCom : selectedInCompletedTransfers) {
+                System.out.println("txInCom = " + txInCom);
+                addLineForTransfer(txInCom.getFromInstitution(), txInCom.getToInstitution(),"#99FF66");
+            }
+        }
+        if (selectedOutCompletedTransfers != null) {
+            System.out.println("selectedOutCompletedTransfers.size() = " + selectedOutCompletedTransfers.size());
+            for (Transfer txOutCom : selectedOutCompletedTransfers) {
+                System.out.println("txOutCom = " + txOutCom);
+                addLineForTransfer(txOutCom.getFromInstitution(), txOutCom.getToInstitution(),"#FFCCFF");
             }
         }
     }
@@ -246,5 +268,22 @@ public class GmapController implements Serializable {
         this.preference = preference;
     }
 
+    public List<Transfer> getSelectedInCompletedTransfers() {
+        return selectedInCompletedTransfers;
+    }
+
+    public void setSelectedInCompletedTransfers(List<Transfer> selectedInCompletedTransfers) {
+        this.selectedInCompletedTransfers = selectedInCompletedTransfers;
+    }
+
+    public List<Transfer> getSelectedOutCompletedTransfers() {
+        return selectedOutCompletedTransfers;
+    }
+
+    public void setSelectedOutCompletedTransfers(List<Transfer> selectedOutCompletedTransfers) {
+        this.selectedOutCompletedTransfers = selectedOutCompletedTransfers;
+    }
+
+    
     
 }

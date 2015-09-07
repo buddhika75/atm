@@ -7,6 +7,7 @@ package entity;
 
 import enums.InstitutionType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -94,6 +95,53 @@ public class Institution implements Serializable {
         return transfersIn;
     }
 
+    public List<Transfer> getTransfersInCompleted() {
+        List<Transfer> lst = new ArrayList<>();
+        if(transfersIn!=null && !transfersIn.isEmpty())
+        for(Transfer t:transfersIn){
+            if(t.isCompleted()){
+                lst.add(t);
+            }
+        }
+        return lst;
+    }
+    
+    public List<Transfer> getTransfersInPending() {
+        List<Transfer> lst = new ArrayList<>();
+        if(transfersIn!=null && !transfersIn.isEmpty())
+        for(Transfer t:transfersIn){
+            if(!t.isCompleted()){
+                lst.add(t);
+            }
+        }
+        return lst;
+    }
+    
+    public List<Transfer> getTransfersOutCompleted() {
+        List<Transfer> lst = new ArrayList<>();
+        if(transfersOut!=null && !transfersOut.isEmpty())
+        for(Transfer t:transfersOut){
+            if(t.isCompleted()){
+                lst.add(t);
+            }
+        }
+        return lst;
+    }
+    
+    public List<Transfer> getTransfersOutPending() {
+        List<Transfer> lst = new ArrayList<>();
+        if(transfersOut!=null && !transfersOut.isEmpty())
+        for(Transfer t:transfersOut){
+            if(!t.isCompleted()){
+                lst.add(t);
+            }
+        }
+        return lst;
+    }
+    
+    
+    
+    
     public void setTransfersIn(List<Transfer> transfersIn) {
         this.transfersIn = transfersIn;
     }

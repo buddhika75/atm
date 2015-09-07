@@ -11,27 +11,32 @@
         <p:dialog id="TransferViewDlg" widgetVar="TransferViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewTransferTitle}">
             <h:form id="TransferViewForm">
                 <h:panelGroup id="display">
-                     <p:panelGrid columns="2" rendered="#{transferController.selected != null}">
-                       
+                    <p:panelGrid columns="2" rendered="#{transferController.selected != null}">
+
                         <p:outputLabel value="#{bundle.CreateTransferLabel_transferNo}" for="transferNo" />
                         <p:outputLabel id="transferNo" value="#{transferController.selected.transferNo}" title="#{bundle.CreateTransferTitle_transferNo}" />
-                       
+
                         <p:outputLabel value="#{bundle.CreateTransferLabel_name}" for="name" />
                         <p:outputLabel id="name" value="#{transferController.selected.name}" title="#{bundle.CreateTransferTitle_name}" />
 
                         <p:outputLabel value="#{bundle.CreateTransferLabel_fromInstitution}" for="fromInstitution" />
                         <p:outputLabel id="fromInstitution" value="#{transferController.selected.fromInstitution.name}" >
                         </p:outputLabel>
-                        
+
                         <p:outputLabel value="From Unit" for="fromUnit" />
                         <p:outputLabel id="fromUnit" value="#{transferController.selected.fromUnit}" title="From Unit" />
 
                         <p:outputLabel value="#{bundle.CreateTransferLabel_toInstitution}" for="toInstitution" />
                         <p:outputLabel id="toInstitution" value="#{transferController.selected.toInstitution.name}" >
                         </p:outputLabel>
-                        
+
                         <p:outputLabel value="To Unit" for="toUnit" />
                         <p:outputLabel id="toUnit" value="#{transferController.selected.toUnit}" title="To Unit" />
+
+                        <p:outputLabel value="Status" />
+                        <p:outputLabel id="lblCompleted" rendered="#{transferController.selected.completed}" value="Completed" ></p:outputLabel>
+                        <p:outputLabel id="lblPending" rendered="#{!transferController.selected.completed}" value="Pending" ></p:outputLabel>
+
 
                     </p:panelGrid>
                     <p:commandButton value="#{bundle.Close}" onclick="TransferViewDialog.hide()"/>
