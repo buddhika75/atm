@@ -42,8 +42,15 @@
 
                                 <p:panel id="panelIns" >
                                     <f:facet name="header" >
-                                        <p:outputLabel value="#{gmapController.marker.institution.name}" ></p:outputLabel>
+                                        <p:outputLabel rendered="#{gmapController.marker ne null}" value="#{gmapController.marker.institution.name}" ></p:outputLabel>
 
+                                        <h:panelGroup rendered="#{gmapController.polyline ne null}" >
+                                            <p:outputLabel value="#{gmapController.polyline.transfer.fromInstitution.name}" ></p:outputLabel>
+                                            <p:outputLabel value="&nbsp;-&nbsp;" ></p:outputLabel>
+                                            <p:outputLabel value="#{gmapController.polyline.transfer.toInstitution.name}" ></p:outputLabel>
+                                        </h:panelGroup>
+
+                                        
                                         <p:commandButton id="btnDisplay" value="Display"
                                                          process=":#{p:component('gpLists')} btnDisplay"
                                                          action="#{gmapController.addLinesForTransfers}" 
@@ -167,46 +174,50 @@
                                             <p:tab title="Ups" >
                                                 <p:dataTable 
                                                     id="tblUps"
-                                                    value="#{gmapController.upsPending}" var="intx"
+                                                    value="#{gmapController.upsPending}" var="uptx"
                                                     selection="#{gmapController.selectedInTransfers}" 
-                                                    rowKey="#{intx.id}">
+                                                    rowKey="#{uptx.id}">
                                                     <p:column selectionMode="multiple" style="width: 20px;"></p:column>
                                                     <p:column headerText="No" style="width: 20px;" >
-                                                        <h:outputText value="#{intx.transferNo}" ></h:outputText>
+                                                        <h:outputText value="#{uptx.transferNo}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="From" style="width: 100px;">
-                                                        <h:outputText value="#{intx.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value="#{uptx.fromInstitution.name}" ></h:outputText>
                                                         <h:outputText value=" - " ></h:outputText>
-                                                        <h:outputText value="#{intx.fromUnit}" ></h:outputText>
+                                                        <h:outputText value="#{uptx.fromUnit}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="Name" style="width: 100px;" >
-                                                        <h:outputText value="#{intx.name}" ></h:outputText>
+                                                        <h:outputText value="#{uptx.name}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="To Unit" style="width: 100px;" >
-                                                        <h:outputText value="#{intx.toUnit}" ></h:outputText>
+                                                        <h:outputText value="#{uptx.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{uptx.toUnit}" ></h:outputText>
                                                     </p:column>
                                                 </p:dataTable>
                                             </p:tab>
                                             <p:tab title="Downs" >
                                                 <p:dataTable value="#{gmapController.downsPending}" 
                                                              id="tblDowns"
-                                                             var="outtx"
+                                                             var="downtx"
                                                              selection="#{gmapController.selectedOutTransfers}" 
-                                                             rowKey="#{outtx.id}">
+                                                             rowKey="#{downtx.id}">
                                                     <p:column selectionMode="multiple" style="width: 20px;"></p:column>
                                                     <p:column headerText="No" style="width: 20px;">
-                                                        <h:outputText value="#{outtx.transferNo}" ></h:outputText>
+                                                        <h:outputText value="#{downtx.transferNo}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="To" style="width: 100px;">
-                                                        <h:outputText value="#{outtx.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value="#{downtx.toInstitution.name}" ></h:outputText>
                                                         <h:outputText value=" - " ></h:outputText>
-                                                        <h:outputText value="#{outtx.toUnit}" ></h:outputText>
+                                                        <h:outputText value="#{downtx.toUnit}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="Name" style="width: 100px;">
-                                                        <h:outputText value="#{outtx.name}" ></h:outputText>
+                                                        <h:outputText value="#{downtx.name}" ></h:outputText>
                                                     </p:column>
-                                                    <p:column headerText="From Unit" style="width: 100px;">
-                                                        <h:outputText value="#{outtx.fromUnit}" ></h:outputText>
+                                                    <p:column headerText="From" style="width: 100px;">
+                                                        <h:outputText value="#{downtx.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{downtx.fromUnit}" ></h:outputText>
                                                     </p:column>
 
                                                 </p:dataTable>
@@ -217,46 +228,50 @@
                                                 <p:dataTable 
                                                     id="tblUpsCom"
                                                     value="#{gmapController.upsCompleted}" 
-                                                    var="intxc"
+                                                    var="uptxc"
                                                     selection="#{gmapController.selectedInCompletedTransfers}" 
-                                                    rowKey="#{intxc.id}">
+                                                    rowKey="#{uptxc.id}">
                                                     <p:column selectionMode="multiple" style="width: 20px;"></p:column>
                                                     <p:column headerText="No" style="width: 20px;" >
-                                                        <h:outputText value="#{intxc.transferNo}" ></h:outputText>
+                                                        <h:outputText value="#{uptxc.transferNo}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="From" style="width: 100px;">
-                                                        <h:outputText value="#{intxc.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value="#{uptxc.fromInstitution.name}" ></h:outputText>
                                                         <h:outputText value=" - " ></h:outputText>
-                                                        <h:outputText value="#{intxc.fromUnit}" ></h:outputText>
+                                                        <h:outputText value="#{uptxc.fromUnit}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="Name" style="width: 100px;" >
-                                                        <h:outputText value="#{intxc.name}" ></h:outputText>
+                                                        <h:outputText value="#{uptxc.name}" ></h:outputText>
                                                     </p:column>
-                                                    <p:column headerText="To Unit" style="width: 100px;" >
-                                                        <h:outputText value="#{intxc.toUnit}" ></h:outputText>
+                                                    <p:column headerText="To" style="width: 100px;" >
+                                                        <h:outputText value="#{uptxc.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{uptxc.toUnit}" ></h:outputText>
                                                     </p:column>
                                                 </p:dataTable>
                                             </p:tab>
                                             <p:tab title="Downs (Comp)" >
                                                 <p:dataTable value="#{gmapController.downsCompleted}" 
                                                              id="tblDownsCom"
-                                                             var="outtxc"
+                                                             var="downtxc"
                                                              selection="#{gmapController.selectedOutCompletedTransfers}" 
-                                                             rowKey="#{outtxc.id}">
+                                                             rowKey="#{downtxc.id}">
                                                     <p:column selectionMode="multiple" style="width: 20px;"></p:column>
                                                     <p:column headerText="No" style="width: 20px;">
-                                                        <h:outputText value="#{outtxc.transferNo}" ></h:outputText>
+                                                        <h:outputText value="#{downtxc.transferNo}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="To" style="width: 100px;">
-                                                        <h:outputText value="#{outtxc.toInstitution.name}" ></h:outputText>
+                                                        <h:outputText value="#{downtxc.toInstitution.name}" ></h:outputText>
                                                         <h:outputText value=" - " ></h:outputText>
-                                                        <h:outputText value="#{outtxc.toUnit}" ></h:outputText>
+                                                        <h:outputText value="#{downtxc.toUnit}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="Name" style="width: 100px;">
-                                                        <h:outputText value="#{outtxc.name}" ></h:outputText>
+                                                        <h:outputText value="#{downtxc.name}" ></h:outputText>
                                                     </p:column>
                                                     <p:column headerText="From Unit" style="width: 100px;">
-                                                        <h:outputText value="#{outtxc.fromUnit}" ></h:outputText>
+                                                        <h:outputText value="#{downtxc.fromInstitution.name}" ></h:outputText>
+                                                        <h:outputText value=" - " ></h:outputText>
+                                                        <h:outputText value="#{downtxc.fromUnit}" ></h:outputText>
                                                     </p:column>
 
                                                 </p:dataTable>

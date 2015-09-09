@@ -238,7 +238,7 @@ public class GmapController implements Serializable {
                 j = "select t "
                         + " from Transfer t "
                         + " where t.fromInstitution=:fi and t.toInstitution=:ti "
-                        + " and t.completed=false "
+                        + " and (t.completed=false  or t.completed is null) "
                         + " order by t.transferNo";
                 upsPending = transferFacade.findBySQL(j, mp);
                 
@@ -252,7 +252,7 @@ public class GmapController implements Serializable {
                 j = "select t "
                         + " from Transfer t "
                         + " where t.fromInstitution=:ti and t.toInstitution=:fi"
-                        + " and t.completed=false  "
+                        + " and (t.completed=false  or t.completed is null) "
                         + " order by t.transferNo";
                 downsPending = transferFacade.findBySQL(j, mp);
                 
